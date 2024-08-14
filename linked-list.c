@@ -11,29 +11,31 @@ struct node* insertOnStart(struct node *head, int data) {
     if(head == NULL) {
         head = (struct node*) malloc(sizeof(struct node));
         head->data = data;
-        head->previous = NULL;
-        head->next = NULL;
+        head->previous = head;
+        head->next = head;
         return head;
     }
 
     struct node *newNode = (struct node*) malloc(sizeof(struct node));
 
+    struct node *last = head->previous;
     newNode->data = data;
+    last->next = newNode;
     head->previous = newNode;
     newNode->next = head;
-    newNode->previous = NULL;
+    newNode->previous = last;
 
     return newNode;
 }
 
-struct node* insertOnEnd(struct node *head, int data) {
+struct node* insertOnEndSlow(struct node *head, int data) {
     if(head == NULL) {
         return insertOnStart(head, data);
     }
 
     struct node *currentNode = head;
 
-    while(currentNode->next != NULL) {
+    while(currentNode->next != head) {
         currentNode = currentNode->next;
     }
 
@@ -41,8 +43,26 @@ struct node* insertOnEnd(struct node *head, int data) {
 
     newNode->data = data;
     currentNode->next = newNode;
+    newNode->next = head;
     newNode->previous = currentNode;
-    newNode->next = NULL;
+    head->previous = newNode;
+
+    return head;
+}
+
+struct node* insertOnEnd(struct node *head, int data) {
+    if(head == NULL) {
+        return insertOnStart(head, data);
+    }
+
+    struct node *newNode = (struct node*) malloc(sizeof(struct node));
+
+    struct node *last = head->previous;
+    newNode->data = data;
+    last->next = newNode;
+    newNode->previous = last;
+    newNode->next = head;
+    head->previous = newNode;
 
     return head;
 }
@@ -59,7 +79,7 @@ struct node* removeNode(struct node *head, int data) {
         }
 
         struct node *newHead = head->next;
-        newHead->previous = NULL;
+        newHead->previous = head->previous;
         free(head);
         return newHead;
     }
@@ -89,10 +109,12 @@ void printFromTheStart(struct node *head) {
         return;
     }
 
-    while(head != NULL) {
-        printf("%d\n", head->data);
-        head = head->next;
-    }
+    struct node *currentNode = head;
+
+    do {
+        printf("%d\n", currentNode->data);
+        currentNode = currentNode->next;
+    } while (currentNode != head && currentNode != NULL);
 }
 
 void printFromTheEnd(struct node *head) {
@@ -112,17 +134,13 @@ void printFromTheEnd(struct node *head) {
 
 int main() {
     struct node *head = NULL;
+    int i;
 
-    head = insertOnEnd(head, 10);
-    head = insertOnEnd(head, 20);
-    head = insertOnEnd(head, 30);
-    head = insertOnEnd(head, 40);
-    head = insertOnEnd(head, 50);
-    head = insertOnEnd(head, 60);
-    head = insertOnEnd(head, 70);
-    head = insertOnEnd(head, 80);
+    for(i = 0; i < 1000000; i++) {
+        head = insertOnEnd(head, i);
+    }
 
-    head = removeNode(head, 30);
+    head = removeNode(head, 999999);
 
     printFromTheStart(head);
 
