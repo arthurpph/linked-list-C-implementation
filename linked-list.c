@@ -122,13 +122,11 @@ void printFromTheEnd(struct node *head) {
         return;
     }
 
-    while(head->next != NULL) {
-        head = head->next;
-    }
+    struct node *currentNode = head->previous;
 
-    while(head != NULL) {
-        printf("%d\n", head->data);
-        head = head->previous;
+    while(currentNode != NULL) {
+        printf("%d\n", currentNode->data);
+        currentNode = currentNode->previous;
     }
 }
 
@@ -142,7 +140,7 @@ int main() {
 
     head = removeNode(head, 999999);
 
-    printFromTheStart(head);
+    printFromTheEnd(head);
 
     system("pause");
     return 0;
