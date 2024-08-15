@@ -126,6 +126,11 @@ void printFromTheEnd(struct node *head) {
 
     while(currentNode != NULL) {
         printf("%d\n", currentNode->data);
+
+        if(currentNode == head) {
+            break;
+        }
+
         currentNode = currentNode->previous;
     }
 }
