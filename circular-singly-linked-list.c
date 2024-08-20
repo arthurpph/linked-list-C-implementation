@@ -86,8 +86,11 @@ struct node *removeNode(struct node *head, int number) {
 }
 
 void print(struct node *head) {
-    struct node *currentNode = head;
+    if(head == NULL) {
+        return;
+    }
 
+    struct node *currentNode = head;
     do {
         printf("%d\n", currentNode->number);
         currentNode = currentNode->next;
